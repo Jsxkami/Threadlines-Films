@@ -1,0 +1,98 @@
+// Reemplaza videoUrl con la URL de tu video (mp4 o un embed proxy),
+// y posterTone con el tono que quieras para el placeholder mientras no tengas poster real.
+// orientation: "horizontal" (16:9) o "vertical" (9:16)
+
+const projects = [
+  {
+    id: 'p01',
+    title: 'Amara & Julien',
+    client: 'Amara & Julien Dupont',
+    category: 'Destination Wedding',
+    year: '2025',
+    location: 'Aix-en-Provence, France',
+    services: ['Full Day Coverage', 'Highlight Film', 'Cinematic Teaser'],
+    description:
+      'A lavender-lit afternoon in Provence — an intimate ceremony among family, and a reception that stretched golden into the night.',
+    notes: 'Shot on S-Log3, graded for warm film tones. Sound design layered from live ceremony audio.',
+    videoUrl: '/videos/demo.mp4',
+    orientation: 'horizontal',
+    posterTone: 1,
+  },
+  {
+    id: 'p02',
+    title: 'Heavenlee y Abraham. 🤍',
+    client: 'NHeavenlee y Abraham. 🤍',
+    category: 'Editorial Wedding',
+    year: '2025',
+    location: 'Lake Como, Italy',
+    services: ['8-Hour Coverage', 'Highlight Film'],
+    description:
+      'A lakeside villa, quiet morning light, and a first look that stopped the entire garden.',
+    notes: 'Vertical companion piece cut for social — full highlight delivered separately.',
+    videoUrl: '/videos/reel.mp4',
+    orientation: 'horizontal',
+    posterTone: 2,
+  },
+  {
+    id: 'p03',
+    title: 'Claire & Mateo',
+    client: 'Claire & Mateo Rossi',
+    category: 'Intimate Elopement',
+    year: '2024',
+    location: 'Santorini, Greece',
+    services: ['Elopement Package', 'Mini Documentary'],
+    description:
+      'Two people, a cliffside chapel, and the Aegean doing most of the talking.',
+    notes: 'Documentary cut runs 9 minutes — built around unscripted vows.',
+    videoUrl: '',
+    orientation: 'horizontal',
+    posterTone: 3,
+  },
+  {
+    id: 'p04',
+    title: 'Ingrid & Samuel',
+    client: 'Ingrid & Samuel Berg',
+    category: 'Full Cover Wedding',
+    year: '2024',
+    location: 'The Hamptons, New York',
+    services: ['12-Hour Coverage', '2 Videographers', 'Mini Documentary'],
+    description:
+      'A family estate transformed for one night — captured from the first dress button to the last dance.',
+    notes: 'Two-camera coverage throughout, drone establishing shots at golden hour.',
+    videoUrl: '',
+    orientation: 'horizontal',
+    posterTone: 4,
+  },
+  {
+    id: 'p05',
+    title: 'Yuki & Adrien',
+    client: 'Yuki & Adrien Moreau',
+    category: 'Destination Wedding',
+    year: '2024',
+    location: 'Kyoto, Japan',
+    services: ['Full Day Coverage', 'Cinematic Teaser'],
+    description:
+      'Autumn leaves, a shrine ceremony at dawn, and a reception woven with two cultures.',
+    notes: 'Teaser scored with a custom composition, delivered within two weeks.',
+    videoUrl: '',
+    orientation: 'vertical',
+    posterTone: 5,
+  },
+  {
+    id: 'p06',
+    title: 'Louisa & Henrik',
+    client: 'Louisa & Henrik Solberg',
+    category: 'Editorial Wedding',
+    year: '2023',
+    location: 'Reine, Lofoten Islands',
+    services: ['Elopement Package', 'Highlight Film'],
+    description:
+      'Midnight sun, a fjord as the aisle, and vows exchanged in near silence.',
+    notes: 'Shot entirely handheld to preserve the rawness of the location.',
+    videoUrl: '',
+    orientation: 'horizontal',
+    posterTone: 6,
+  },
+]
+
+export default projects
