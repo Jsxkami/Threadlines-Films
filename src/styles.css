@@ -449,7 +449,7 @@ button {
 .portfolio-card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(10,10,10,0) 40%, rgba(10,10,10,0.82) 100%);
+  background: linear-gradient(180deg, rgba(10,10,10,0) 30%, rgba(10,10,10,0.9) 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -738,7 +738,7 @@ button {
 
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   background: var(--line);
   border: 1px solid var(--line);

@@ -45,6 +45,13 @@ const PACKAGES = [
       'Delivery in 4–6 weeks',
     ],
   },
+    {
+    name: 'Custom Quotes',
+    price: 'Your Budget',
+    features: [
+      'Let us know your vision and budget, and we’ll create a custom package tailored to your needs.',
+    ],
+  },
 ]
 
 const ADDONS = [

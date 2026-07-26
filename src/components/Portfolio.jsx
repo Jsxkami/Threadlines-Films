@@ -10,11 +10,12 @@ gsap.registerPlugin(ScrollTrigger)
 // Swap these for background-image: url(...) once you have real thumbnails.
 const TONES = {
   1: 'linear-gradient(135deg, #2b2320, #1a1614)',
-  2: 'linear-gradient(135deg, #241d22, #14111a)',
-  3: 'linear-gradient(135deg, #1f2622, #121815)',
-  4: 'linear-gradient(135deg, #262220, #151212)',
-  5: 'linear-gradient(135deg, #221e26, #131018)',
-  6: 'linear-gradient(135deg, #1c2126, #101216)',
+  2: 'background-image: url(/videos/reel-pic.jpg)',
+  3: 'background-image: url(/videos/reel-pic.jpg)',
+  //3: 'linear-gradient(135deg, #1f2622, #121815)',
+  // 4: 'linear-gradient(135deg, #262220, #151212)',
+  // 5: 'linear-gradient(135deg, #221e26, #131018)',
+  // 6: 'linear-gradient(135deg, #1c2126, #101216)',
 }
 
 export default function Portfolio() {
@@ -51,7 +52,7 @@ export default function Portfolio() {
         <div className="portfolio-head">
           <div>
             <span className="eyebrow">Portfolio</span>
-            <h2 className="section-heading">Selected Films</h2>
+            <h2 className="section-heading">Lastest Films</h2>
           </div>
           <p>A collection of weddings we've had the privilege of documenting, from intimate elopements to full destination celebrations.</p>
         </div>
@@ -67,9 +68,17 @@ export default function Portfolio() {
               onKeyDown={(e) => e.key === 'Enter' && setActiveIndex(i)}
             >
               <div
-                className="portfolio-card-media"
-                style={{ background: TONES[p.posterTone] || TONES[1] }}
-              />
+  className="portfolio-card-media"
+  style={
+    p.poster
+      ? {
+          backgroundImage: `url(${p.poster})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }
+      : { background: TONES[p.posterTone] || TONES[1] }
+  }
+/>
               <span className="portfolio-card-index">{String(i + 1).padStart(2, '0')}</span>
               <div className="portfolio-card-overlay">
                 <span className="portfolio-card-cat">{p.category}</span>

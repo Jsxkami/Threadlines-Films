@@ -5,10 +5,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const STATS = [
-  { num: '140+', label: 'Weddings Filmed' },
-  { num: '9', label: 'Years of Experience' },
-  { num: '32', label: 'Destination Weddings' },
-  { num: '140+', label: 'Happy Couples' },
+  { num: '10+', label: 'Weddings Filmed' },
+  { num: '3', label: 'Years of Experience' },
+  { num: '7', label: 'Destination Weddings' },
+  { num: '20+', label: 'Happy Couples' },
 ]
 
 export default function About() {
