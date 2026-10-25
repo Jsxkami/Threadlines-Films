@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Reveal } from '../components/Reveal.jsx'
 import { useT } from '../i18n.jsx'
 import { brand } from '../content.js'
+import DatePicker from '../components/DatePicker.jsx'
 
 // Set VITE_FORM_ENDPOINT (e.g. a Formspree URL) in Vercel to post the form.
 // Without it, the form opens the visitor's email app with the message ready.
@@ -112,10 +113,10 @@ export default function Contact({ prefill }) {
               />
             </label>
             <div className="form-row">
-              <label>
+              <div className="field">
                 <span>{t.contact.date}</span>
-                <input type="date" value={form.date} onChange={set('date')} />
-              </label>
+                <DatePicker value={form.date} onChange={(date) => setForm((f) => ({ ...f, date }))} />
+              </div>
               <label>
                 <span>{t.contact.where}</span>
                 <input value={form.where} onChange={set('where')} />

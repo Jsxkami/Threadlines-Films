@@ -38,7 +38,18 @@ export default function About() {
           {t.about.stats.map((s, i) => (
             <Reveal className="stat" key={s.label} delay={i * 0.08}>
               <span className="display stat-n">
-                <Counter to={s.to} suffix={s.suffix} />
+                {s.text ? (
+                  <span className="stat-text">
+                    {s.text.split('/').map((part, k) => (
+                      <span key={part}>
+                        {k > 0 && <i>/</i>}
+                        {part}
+                      </span>
+                    ))}
+                  </span>
+                ) : (
+                  <Counter to={s.to} suffix={s.suffix} />
+                )}
               </span>
               <span className="eyebrow muted">{s.label}</span>
             </Reveal>

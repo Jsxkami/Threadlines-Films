@@ -70,14 +70,20 @@ function Timeline({ hours, t }) {
 
 function Builder({ onSend }) {
   const { t } = useT()
-  const [hours, setHours] = useState(cfg.defaultHours)
-  const [crew, setCrew] = useState(1)
+  const [planId, setPlanId] = useState(cfg.defaultPlan)
+  const plan = plans.find((p) => p.id === planId)
+  const [hours, setHours] = useState(plan.hours)
   const [extras, setExtras] = useState(cfg.defaultExtras)
 
   const total = useMemo(() => {
     const extrasSum = extras.reduce((sum, k) => sum + cfg.extras[k], 0)
-    return cfg.base + hours * cfg.perHour + (crew === 2 ? cfg.secondFilmmaker : 0) + extrasSum
-  }, [hours, crew, extras])
+    return plan.price + (hours - plan.hours) * cfg.perHour + extrasSum
+  }, [plan, hours, extras])
+
+  const pickPlan = (p) => {
+    setPlanId(p.id)
+    setHours(p.hours)
+  }
 
   const toggle = (key) =>
     setExtras((list) => (list.includes(key) ? list.filter((k) => k !== key) : [...list, key]))
@@ -87,14 +93,14 @@ function Builder({ onSend }) {
     const lines = [
       t.builder.msgIntro,
       `• ${t.builder.msgHours}: ${hours}${t.builder.hoursUnit}`,
-      `• ${t.builder.msgCrew}: ${crew === 2 ? t.builder.crewTwo : t.builder.crewOne}`,
+      `• ${t.builder.msgCollection}: ${t.collections.names[plan.id]}`,
       `• ${t.builder.msgDeliverables}: ${names.length ? names.join(', ') : '—'}`,
       `• ${t.builder.msgTotal}: ${fmt(total)}`,
     ]
     onSend(lines.join('\n'))
   }
 
-  const pct = ((hours - cfg.minHours) / (cfg.maxHours - cfg.minHours)) * 100
+  const pct = ((hours - plan.hours) / (cfg.maxHours - plan.hours)) * 100
 
   return (
     <div className="builder" id="builder">
@@ -124,7 +130,7 @@ function Builder({ onSend }) {
               <input
                 id="hours"
                 type="range"
-                min={cfg.minHours}
+                min={plan.hours}
                 max={cfg.maxHours}
                 step={1}
                 value={hours}
@@ -135,24 +141,24 @@ function Builder({ onSend }) {
           </div>
 
           <div className="control">
-            <span className="eyebrow muted">{t.builder.crew}</span>
-            <div className="segmented" role="group" aria-label={t.builder.crew}>
-              {[1, 2].map((n) => (
+            <span className="eyebrow muted">{t.builder.collection}</span>
+            <div className="segmented" role="group" aria-label={t.builder.collection}>
+              {plans.map((p) => (
                 <button
                   type="button"
-                  key={n}
-                  className={crew === n ? 'active' : ''}
-                  onClick={() => setCrew(n)}
-                  aria-pressed={crew === n}
+                  key={p.id}
+                  className={planId === p.id ? 'active' : ''}
+                  onClick={() => pickPlan(p)}
+                  aria-pressed={planId === p.id}
                 >
-                  {crew === n && (
+                  {planId === p.id && (
                     <motion.span
                       layoutId="crew-pill"
                       className="pill"
                       transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                     />
                   )}
-                  <span className="pill-label">{n === 1 ? t.builder.crewOne : t.builder.crewTwo}</span>
+                  <span className="pill-label">{t.collections.names[p.id]}</span>
                 </button>
               ))}
             </div>
@@ -230,7 +236,7 @@ export default function Collections({ onSend }) {
                 {plan.featured && <span className="plan-badge">{t.collections.popular}</span>}
                 <span className="eyebrow">{name}</span>
                 <span className="display plan-price">
-                  <small>{t.collections.from}</small> {fmt(plan.price)}
+                  {fmt(plan.price)}
                 </span>
                 <ul>
                   {t.collections.features[plan.id].map((f) => (
@@ -248,7 +254,11 @@ export default function Collections({ onSend }) {
             )
           })}
         </div>
-        <p className="muted small collections-note">{t.collections.note}</p>
+        <p className="muted small collections-note">
+          {t.collections.note}
+          <br />
+          {t.collections.area}
+        </p>
 
         <Builder onSend={onSend} />
       </div>
