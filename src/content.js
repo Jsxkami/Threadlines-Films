@@ -15,18 +15,33 @@ export const brand = {
 
 export const media = {
   heroVideo: '/media/videos/hero.mp4',
+  heroVideoMobile: '/media/videos/hero-mobile.mp4',
   heroPoster: '/media/videos/hero-thumbs.jpg',
 }
 
 // Shared (non-translated) film data. Text lives in content[lang].filmItems (same order).
-// vimeo: Vimeo video ID  |  video: path/URL to an MP4  |  still: cover image
+// cover: card image  |  videos: shown in this order inside the project modal.
+// Each video: kind (see films.kinds), src (MP4 path/URL), poster, duration.
 export const films = [
-  { id: 'hero', hue: 18, still: '/media/videos/hero-thumbs.jpg', vimeo: '', video: '/media/videos/hero.mp4', duration: '' },
-  { id: 'reel', hue: 32, still: '/media/videos/reel-thumbs.jpg', vimeo: '', video: '/media/videos/reel.mp4', duration: '' },
-  // Placeholders: add `still` and `video` (or `vimeo`) when the media is ready.
-  { id: 'film-03', hue: 350, still: '', vimeo: '', video: '', duration: '' },
-  { id: 'film-04', hue: 205, still: '', vimeo: '', video: '', duration: '' },
-  { id: 'film-05', hue: 120, still: '', vimeo: '', video: '', duration: '' },
+  {
+    id: 'karina-danny',
+    hue: 190,
+    cover: '/media/works/karina-danny/cover.jpg',
+    videos: [
+      { kind: 'teaser', src: '/media/works/karina-danny/teaser.mp4', poster: '/media/works/karina-danny/teaser.jpg', duration: '0:40' },
+      { kind: 'highlight', src: '/media/works/karina-danny/highlight.mp4', poster: '/media/works/karina-danny/highlight.jpg', duration: '2:50' },
+    ],
+  },
+  {
+    id: 'heavenlee-abraham',
+    hue: 20,
+    cover: '/media/works/heavenlee-abraham/highlight.jpg',
+    videos: [
+      { kind: 'prewedding', src: '/media/works/heavenlee-abraham/prewedding.mp4', poster: '/media/works/heavenlee-abraham/prewedding.jpg', duration: '0:29' },
+      { kind: 'teaser', src: '/media/works/heavenlee-abraham/teaser.mp4', poster: '/media/works/heavenlee-abraham/teaser.jpg', duration: '0:12' },
+      { kind: 'highlight', src: '/media/works/heavenlee-abraham/highlight.mp4', poster: '/media/works/heavenlee-abraham/highlight.jpg', duration: '1:13' },
+    ],
+  },
 ]
 
 // hours = coverage included in the collection price.
@@ -91,19 +106,21 @@ export const content = {
       ],
     },
     films: {
-      eyebrow: 'Films',
+      eyebrow: 'Recent works',
       title: 'Recent films',
-      sub: 'A collection of weddings we have had the privilege of documenting, from intimate elopements to full destination celebrations.',
-      hint: 'Scroll →',
+      sub: 'Two recent stories, told the way we remember them: in motion, with the real sound of the day.',
       close: 'Close',
-      empty: 'Add this film in src/content.js — a Vimeo ID or an MP4 path.',
+      watch: 'Watch',
+      count: ['film', 'films'],
+      inProject: 'In this project',
+      project: 'Project',
+      prev: 'Previous project',
+      next: 'Next project',
+      kinds: { prewedding: 'Pre-wedding', highlight: 'Highlight', teaser: 'Teaser' },
     },
     filmItems: [
-      { couple: 'Sofía & Mateo', place: 'Tulum, Mexico', type: 'Destination wedding' },
-      { couple: 'Amelia & Julien', place: 'Lake Como, Italy', type: 'Editorial wedding' },
-      { couple: 'Daniela & Andrés', place: 'Cartagena, Colombia', type: 'Family celebration' },
-      { couple: 'Claire & Marcus', place: 'Miami, Florida', type: 'Intimate elopement' },
-      { couple: 'Couple names', place: 'Location', type: 'Wedding film' },
+      { couple: 'Karina & Danny', place: '', type: 'Wedding film', blurb: 'A celebration told in two films: the full highlight of the day and a short teaser.' },
+      { couple: 'Heavenlee & Abraham', place: '', type: 'Wedding film', blurb: 'From the pre-wedding session to the wedding day: a pre-wedding film, the highlight and a teaser.' },
     ],
     process: {
       eyebrow: 'Approach',
@@ -206,7 +223,7 @@ export const content = {
       send: 'Send message',
       sending: 'Sending…',
       sent: 'Thank you — we will reply within 48 hours.',
-      error: 'Something went wrong. Please email us directly.',
+      error: 'Something went wrong. Please try again or email us directly.',
       mailtoNote: 'Your email app will open with your message ready to send.',
     },
     footer: { tagline: 'Cinematic wedding films', crafted: 'Crafted with passion and timeless storytelling.', top: 'Back to top' },
@@ -243,19 +260,21 @@ export const content = {
       ],
     },
     films: {
-      eyebrow: 'Films',
+      eyebrow: 'Trabajos recientes',
       title: 'Films recientes',
-      sub: 'Una colección de bodas que hemos tenido el privilegio de documentar, desde escapadas íntimas hasta grandes celebraciones de destino.',
-      hint: 'Desliza →',
+      sub: 'Dos historias recientes, contadas como las recordamos: en movimiento y con el sonido real del día.',
       close: 'Cerrar',
-      empty: 'Agrega este film en src/content.js — un ID de Vimeo o la ruta de un MP4.',
+      watch: 'Ver',
+      count: ['film', 'films'],
+      inProject: 'En este proyecto',
+      project: 'Proyecto',
+      prev: 'Proyecto anterior',
+      next: 'Siguiente proyecto',
+      kinds: { prewedding: 'Pre-boda', highlight: 'Highlight', teaser: 'Teaser' },
     },
     filmItems: [
-      { couple: 'Sofía & Mateo', place: 'Tulum, México', type: 'Boda de destino' },
-      { couple: 'Amelia & Julien', place: 'Lago de Como, Italia', type: 'Boda editorial' },
-      { couple: 'Daniela & Andrés', place: 'Cartagena, Colombia', type: 'Celebración familiar' },
-      { couple: 'Claire & Marcus', place: 'Miami, Florida', type: 'Boda íntima' },
-      { couple: 'Nombres de la pareja', place: 'Lugar', type: 'Film de boda' },
+      { couple: 'Karina & Danny', place: '', type: 'Film de boda', blurb: 'Una celebración contada en dos films: el highlight completo del día y un teaser corto.' },
+      { couple: 'Heavenlee & Abraham', place: '', type: 'Film de boda', blurb: 'De la sesión pre-boda al día de la boda: un film de pre-boda, el highlight y un teaser.' },
     ],
     process: {
       eyebrow: 'Enfoque',
@@ -358,7 +377,7 @@ export const content = {
       send: 'Enviar mensaje',
       sending: 'Enviando…',
       sent: 'Gracias — te responderemos en 48 horas.',
-      error: 'Algo salió mal. Escríbenos directamente por correo.',
+      error: 'Algo salió mal. Inténtalo de nuevo o escríbenos por correo.',
       mailtoNote: 'Se abrirá tu app de correo con el mensaje listo para enviar.',
     },
     footer: { tagline: 'Films de boda cinematográficos', crafted: 'Hecho con pasión y narrativa atemporal.', top: 'Volver arriba' },

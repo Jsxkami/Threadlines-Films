@@ -1,9 +1,11 @@
 import Marquee from '../components/Marquee.jsx'
 import { CharReveal, Counter, Pinned, Reveal, WordReveal } from '../components/Reveal.jsx'
 import { useT } from '../i18n.jsx'
+import { useIsDesktop } from '../hooks.js'
 
 export default function About() {
   const { t } = useT()
+  const desktop = useIsDesktop()
   return (
     <section id="about" className="about">
       <Marquee text={t.marquee} />
@@ -13,6 +15,22 @@ export default function About() {
         </Reveal>
         <WordReveal text={t.about.statement} className="display about-statement" />
 
+        {!desktop && (
+          // Phones: no 450vh pin and no per-letter motion values — plain paragraphs that fade in.
+          <div className="about-static">
+            <div className="about-cols">
+              <Reveal as="p">{t.about.p1}</Reveal>
+              <Reveal as="p" delay={0.05}>
+                {t.about.p2}
+              </Reveal>
+            </div>
+            <Reveal className="about-sign">
+              <span className="eyebrow muted">{`— ${t.about.signature}`}</span>
+            </Reveal>
+          </div>
+        )}
+
+        {desktop && (
         <Pinned className="about-pin">
           {(progress) => (
             <>
@@ -33,6 +51,7 @@ export default function About() {
             </>
           )}
         </Pinned>
+        )}
 
         <div className="stats">
           {t.about.stats.map((s, i) => (

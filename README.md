@@ -24,8 +24,14 @@ Sin archivos, el sitio muestra degradados cinematográficos. Para usar los tuyos
 
 ## Formulario de contacto
 
-- Sin configurar: abre el correo del visitante con el mensaje listo (mailto).
-- Con endpoint: define `VITE_FORM_ENDPOINT` (por ejemplo una URL de Formspree) en Vercel → Settings → Environment Variables. El formulario enviará JSON por POST.
+El formulario envía un POST a `/api/contact` (`api/contact.js`, función de Vercel) que te manda el correo desde un buzón de Hostinger por SMTP. Variables en Vercel → Settings → Environment Variables:
+
+- `SMTP_USER`: el buzón de Hostinger (p. ej. `hello@tudominio.com`).
+- `SMTP_PASS`: la contraseña de ese buzón.
+- `CONTACT_TO` (opcional): dónde recibes las consultas; por defecto, el mismo buzón.
+- `SMTP_HOST` / `SMTP_PORT` (opcionales): `smtp.hostinger.com` / `465`.
+
+Sin configurar (o en `npm run dev`, donde no existe `/api`) abre el correo del visitante con el mensaje listo. Para usar otro servicio (Formspree, etc.) define `VITE_FORM_ENDPOINT`. Para probar la función en local: `npx vercel dev`.
 
 ## Desplegar en Vercel
 

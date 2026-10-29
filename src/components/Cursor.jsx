@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { m as motion, useMotionValue, useSpring } from 'framer-motion'
 import { useFinePointer } from '../hooks.js'
 
 // Custom cursor: a small dot that blooms into a labelled disc ("Play")

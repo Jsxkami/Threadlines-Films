@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useScroll } from 'framer-motion'
+import { m as motion, useScroll } from 'framer-motion'
 import { Reveal } from '../components/Reveal.jsx'
 import { useT } from '../i18n.jsx'
 

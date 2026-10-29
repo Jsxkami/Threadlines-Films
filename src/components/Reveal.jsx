@@ -1,24 +1,26 @@
 import { useEffect, useRef } from 'react'
 import {
   animate,
-  motion,
+  m as motion,
   useInView,
   useMotionValue,
   useScroll,
   useTransform,
 } from 'framer-motion'
-import { EASE } from '../hooks.js'
+import { EASE, isMobileNow, useIsDesktop } from '../hooks.js'
 
 // Fade + rise when the element enters the viewport.
+// On phones the travel, duration and stagger shrink so there is less to composite while scrolling.
 export function Reveal({ children, delay = 0, y = 28, as = 'div', className = '', ...rest }) {
   const Tag = motion[as]
+  const mobile = isMobileNow()
   return (
     <Tag
       className={className}
-      initial={{ opacity: 0, y }}
+      initial={{ opacity: 0, y: mobile ? Math.min(y, 12) : y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -10% 0px' }}
-      transition={{ duration: 1.1, ease: EASE, delay }}
+      viewport={{ once: true, margin: mobile ? '0px 0px -5% 0px' : '0px 0px -10% 0px' }}
+      transition={{ duration: mobile ? 0.6 : 1.1, ease: EASE, delay: mobile ? Math.min(delay, 0.1) : delay }}
       {...rest}
     >
       {children}
@@ -36,7 +38,7 @@ function Word({ word, index, total, progress }) {
 }
 
 // Paragraph whose words light up one by one as you scroll through it.
-export function WordReveal({ text, className = '' }) {
+function ScrollWordReveal({ text, className }) {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.9', 'end 0.55'] })
   const words = text.split(' ')
@@ -47,6 +49,19 @@ export function WordReveal({ text, className = '' }) {
       ))}
     </p>
   )
+}
+
+// Mobile renders the paragraph as static text with a single fade-in instead of one motion value per word.
+export function WordReveal({ text, className = '' }) {
+  const desktop = useIsDesktop()
+  if (!desktop) {
+    return (
+      <Reveal as="p" className={className} y={12}>
+        {text}
+      </Reveal>
+    )
+  }
+  return <ScrollWordReveal text={text} className={className} />
 }
 
 // Each letter starts as the paper colour (invisible) and darkens to `toColor` — never fades out.

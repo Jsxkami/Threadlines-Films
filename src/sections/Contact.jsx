@@ -4,11 +4,12 @@ import { useT } from '../i18n.jsx'
 import { brand } from '../content.js'
 import DatePicker from '../components/DatePicker.jsx'
 
-// Set VITE_FORM_ENDPOINT (e.g. a Formspree URL) in Vercel to post the form.
-// Without it, the form opens the visitor's email app with the message ready.
-const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT
+// Posts to the /api/contact serverless function (api/contact.js) by default.
+// VITE_FORM_ENDPOINT can point at another service (e.g. Formspree) instead.
+// If no backend answers (local dev, or email not configured yet), it falls back to the visitor's email app.
+const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT || '/api/contact'
 
-const EMPTY = { name: '', email: '', date: '', where: '', budget: '', message: '' }
+const EMPTY = { name: '', email: '', date: '', where: '', budget: '', message: '', website: '' }
 
 export default function Contact({ prefill }) {
   const { t } = useT()
@@ -21,16 +22,23 @@ export default function Contact({ prefill }) {
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
+  const openMailClient = () => {
+    const subject = encodeURIComponent(`${brand.name} — ${form.name}`)
+    const body = encodeURIComponent(
+      `${form.message}
+
+${t.contact.name}: ${form.name}
+${t.contact.mail}: ${form.email}
+${t.contact.date}: ${form.date}
+${t.contact.where}: ${form.where}
+${t.contact.budget}: ${form.budget}`,
+    )
+    window.location.href = `mailto:${brand.email}?subject=${subject}&body=${body}`
+  }
+
   const submit = async (e) => {
     e.preventDefault()
-    if (!ENDPOINT) {
-      const subject = encodeURIComponent(`${brand.name} — ${form.name}`)
-      const body = encodeURIComponent(
-        `${form.message}\n\n${t.contact.name}: ${form.name}\n${t.contact.mail}: ${form.email}\n${t.contact.date}: ${form.date}\n${t.contact.where}: ${form.where}\n${t.contact.budget}: ${form.budget}`,
-      )
-      window.location.href = `mailto:${brand.email}?subject=${subject}&body=${body}`
-      return
-    }
+    if (status === 'sending') return
     setStatus('sending')
     try {
       const res = await fetch(ENDPOINT, {
@@ -38,6 +46,12 @@ export default function Contact({ prefill }) {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(form),
       })
+      // No backend here (dev server) or email not configured yet → use the email app.
+      if (res.status === 404 || res.status === 503) {
+        setStatus('idle')
+        openMailClient()
+        return
+      }
       if (!res.ok) throw new Error('bad response')
       setStatus('sent')
       setForm(EMPTY)
@@ -98,6 +112,15 @@ export default function Contact({ prefill }) {
           </div>
 
           <Reveal as="form" className="form" onSubmit={submit} delay={0.1}>
+            <input
+              className="hp"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              value={form.website}
+              onChange={set('website')}
+            />
             <label>
               <span>{t.contact.name}</span>
               <input required value={form.name} onChange={set('name')} autoComplete="name" />
@@ -134,9 +157,10 @@ export default function Contact({ prefill }) {
               <button type="submit" className="btn solid" disabled={status === 'sending'}>
                 {status === 'sending' ? t.contact.sending : t.contact.send}
               </button>
-              {!ENDPOINT && status === 'idle' && <p className="muted small">{t.contact.mailtoNote}</p>}
-              {status === 'sent' && <p className="form-ok">{t.contact.sent}</p>}
-              {status === 'error' && <p className="form-err">{t.contact.error}</p>}
+              <div aria-live="polite">
+                {status === 'sent' && <p className="form-ok">{t.contact.sent}</p>}
+                {status === 'error' && <p className="form-err">{t.contact.error}</p>}
+              </div>
             </div>
           </Reveal>
         </div>

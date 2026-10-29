@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, m as motion } from 'framer-motion'
 import { Reveal } from '../components/Reveal.jsx'
 import { useT } from '../i18n.jsx'
 import { EASE } from '../hooks.js'

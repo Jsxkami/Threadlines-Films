@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
+import { m as motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
 import Still from '../components/Still.jsx'
 import { useT } from '../i18n.jsx'
 import { media } from '../content.js'
-import { EASE } from '../hooks.js'
+import { EASE, useIsDesktop, useReducedMotion } from '../hooks.js'
 
 // The reel starts full-bleed and, as you scroll, shrinks into a cinema frame
 // while the page background fades from ink to paper — a seamless hand-off to the next section.
-export default function Hero() {
+function HeroDesktop() {
   const { t } = useT()
   const ref = useRef(null)
   const videoRef = useRef(null)
@@ -140,4 +140,107 @@ export default function Hero() {
       </motion.div>
     </header>
   )
+}
+
+// Phones: a plain 100svh hero. No clip-path, no background tween, no scroll-linked scale —
+// the only scroll-driven values are a light fade + translate on the copy (opacity/transform only).
+function HeroMobile() {
+  const { t } = useT()
+  const ref = useRef(null)
+  const videoRef = useRef(null)
+  const reduce = useReducedMotion()
+  const [soundOn, setSoundOn] = useState(false)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
+  const copyY = useTransform(scrollYProgress, [0, 0.6], [0, -40])
+
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.muted = !soundOn
+  }, [soundOn])
+
+  // Play only while the hero is on screen, and never for reduced-motion users (poster stays).
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return undefined
+    if (reduce) {
+      v.pause()
+      return undefined
+    }
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) v.play().catch(() => {})
+        else v.pause()
+      },
+      { threshold: 0.05 },
+    )
+    io.observe(v)
+    return () => io.disconnect()
+  }, [reduce])
+
+  return (
+    <header id="top" className="hero-m" ref={ref}>
+      <div className="hero-media">
+        <video
+          ref={videoRef}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={media.heroPoster}
+        >
+          <source src={media.heroVideoMobile} type="video/mp4" />
+        </video>
+      </div>
+      <div className="hero-shade" />
+      <button
+        type="button"
+        className="hero-sound"
+        onClick={() => setSoundOn((s) => !s)}
+        aria-pressed={soundOn}
+      >
+        {soundOn ? t.hero.soundOn : t.hero.soundOff}
+      </button>
+
+      <motion.div className="hero-copy" style={{ opacity: copyOpacity, y: copyY }}>
+        <motion.span
+          className="eyebrow hero-eyebrow"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: EASE, delay: 0.9 }}
+        >
+          {t.hero.eyebrow}
+        </motion.span>
+        <h1 className="display hero-title">
+          {[t.hero.l1, t.hero.l2, t.hero.l3].map((line, i) => (
+            <span className="line" key={i}>
+              <motion.span
+                className="line-inner"
+                initial={{ y: '110%', opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: EASE, delay: 0.8 + i * 0.1 }}
+              >
+                {i === 1 ? <em>{line}</em> : line}
+              </motion.span>
+            </span>
+          ))}
+        </h1>
+        <motion.div
+          className="hero-lower"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: EASE, delay: 1.3 }}
+        >
+          <p>{t.hero.sub}</p>
+          <a href="#contact" className="btn on-video">
+            {t.hero.cta}
+          </a>
+        </motion.div>
+      </motion.div>
+    </header>
+  )
+}
+
+export default function Hero() {
+  const desktop = useIsDesktop()
+  return desktop ? <HeroDesktop /> : <HeroMobile />
 }

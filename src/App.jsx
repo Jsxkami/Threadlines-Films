@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import { AnimatePresence, MotionConfig } from 'framer-motion'
+import { AnimatePresence, LazyMotion, MotionConfig } from 'framer-motion'
 import Loader from './components/Loader.jsx'
 import Cursor from './components/Cursor.jsx'
 import Nav from './components/Nav.jsx'
+import CtaBar from './components/CtaBar.jsx'
 import Hero from './sections/Hero.jsx'
 import About from './sections/About.jsx'
 import Films from './sections/Films.jsx'
@@ -12,6 +13,8 @@ import Testimonials from './sections/Testimonials.jsx'
 import Faq from './sections/Faq.jsx'
 import Contact from './sections/Contact.jsx'
 import Footer from './sections/Footer.jsx'
+
+const loadFeatures = () => import('./motionFeatures.js').then((mod) => mod.default)
 
 function alreadySeen() {
   try {
@@ -24,6 +27,7 @@ function alreadySeen() {
 export default function App() {
   const [loading, setLoading] = useState(() => !alreadySeen())
   const [prefill, setPrefill] = useState('')
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     document.body.style.overflow = loading ? 'hidden' : ''
@@ -48,10 +52,12 @@ export default function App() {
   }, [])
 
   return (
+    <LazyMotion features={loadFeatures}>
     <MotionConfig reducedMotion="user">
       <AnimatePresence>{loading && <Loader key="loader" onDone={finishLoading} />}</AnimatePresence>
       <Cursor />
-      <Nav />
+      <Nav open={menuOpen} setOpen={setMenuOpen} />
+      <CtaBar menuOpen={menuOpen} />
       <main>
         <Hero />
         <About />
@@ -64,5 +70,6 @@ export default function App() {
       </main>
       <Footer />
     </MotionConfig>
+    </LazyMotion>
   )
 }
