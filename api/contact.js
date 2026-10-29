@@ -26,7 +26,10 @@ export default async function handler(req, res) {
   const body = typeof req.body === 'string' ? safeParse(req.body) : req.body || {}
 
   // Honeypot: real visitors never fill this field. Pretend success so bots move on.
-  if (body.website) return res.status(200).json({ ok: true })
+  if (body.hp_field) {
+    console.warn('Contact honeypot triggered')
+    return res.status(200).json({ ok: true, skipped: true })
+  }
 
   const data = {
     name: clip(body.name, 120),
@@ -70,7 +73,7 @@ export default async function handler(req, res) {
       secure: port === 465,
       auth: { user, pass },
     })
-    await transport.sendMail({
+    const info = await transport.sendMail({
       from: `Threadline Films <${user}>`,
       to: process.env.CONTACT_TO || user,
       replyTo: `${data.name.replace(/[<>",]/g, '')} <${data.email}>`,
@@ -78,6 +81,11 @@ export default async function handler(req, res) {
       html,
       text,
     })
+    if (!info.accepted?.length) {
+      console.error('SMTP rejected recipients', info.rejected, info.response)
+      return res.status(502).json({ error: 'rejected' })
+    }
+    console.log('Contact mail accepted', info.accepted, info.response)
     return res.status(200).json({ ok: true })
   } catch (err) {
     console.error('Contact handler failed', err)

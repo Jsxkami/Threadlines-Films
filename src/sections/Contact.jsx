@@ -9,7 +9,7 @@ import DatePicker from '../components/DatePicker.jsx'
 // If no backend answers (local dev, or email not configured yet), it falls back to the visitor's email app.
 const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT || '/api/contact'
 
-const EMPTY = { name: '', email: '', date: '', where: '', budget: '', message: '', website: '' }
+const EMPTY = { name: '', email: '', date: '', where: '', budget: '', message: '', hp_field: '' }
 
 export default function Contact({ prefill }) {
   const { t } = useT()
@@ -114,12 +114,12 @@ ${t.contact.budget}: ${form.budget}`,
           <Reveal as="form" className="form" onSubmit={submit} delay={0.1}>
             <input
               className="hp"
-              name="website"
+              name="hp_field"
               tabIndex={-1}
-              autoComplete="off"
+              autoComplete="one-time-code"
               aria-hidden="true"
-              value={form.website}
-              onChange={set('website')}
+              value={form.hp_field}
+              onChange={set('hp_field')}
             />
             <label>
               <span>{t.contact.name}</span>
