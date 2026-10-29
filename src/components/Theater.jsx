@@ -94,16 +94,22 @@ export default function Theater({ index, onChange, onClose }) {
             <dl className="modal-meta">
               {info.place && (
                 <div>
-                  <dt>{t.contact.location}</dt>
+                  <dt>{t.films.labels.place}</dt>
                   <dd>{info.place}</dd>
                 </div>
               )}
-              <div>
-                <dt>{t.films.project}</dt>
-                <dd>
-                  {film.videos.length} {t.films.count[film.videos.length === 1 ? 0 : 1]}
-                </dd>
-              </div>
+              {info.date && (
+                <div>
+                  <dt>{t.films.labels.date}</dt>
+                  <dd>{info.date}</dd>
+                </div>
+              )}
+              {info.services?.length > 0 && (
+                <div className="modal-meta-wide">
+                  <dt>{t.films.labels.services}</dt>
+                  <dd>{info.services.join(' · ')}</dd>
+                </div>
+              )}
             </dl>
             <p className="modal-blurb">{info.blurb}</p>
           </div>

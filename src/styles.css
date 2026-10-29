@@ -473,3 +473,6 @@ input[type='range']::-moz-range-thumb { width: 20px; height: 20px; border-radius
 }
 
 .form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+.modal-meta-wide { flex-basis: 100%; }
+.modal-meta-wide dd { line-height: 1.6; }
