@@ -17,6 +17,21 @@ const esc = (v) =>
 const clip = (v, n) => String(v ?? '').trim().slice(0, n)
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+const REPLY = {
+  en: {
+    subject: 'We received your message — Threadline Films',
+    hi: 'Hi',
+    body: 'Thank you for writing to us. We have your message and will reply personally within 48 hours.\n\nIf it is urgent, just reply to this email.',
+    sign: 'Threadline Films',
+  },
+  es: {
+    subject: 'Recibimos tu mensaje — Threadline Films',
+    hi: 'Hola',
+    body: 'Gracias por escribirnos. Recibimos tu mensaje y te responderemos personalmente en un plazo de 48 horas.\n\nSi es urgente, responde directamente a este correo.',
+    sign: 'Threadline Films',
+  },
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
@@ -37,6 +52,7 @@ export default async function handler(req, res) {
     date: clip(body.date, 60),
     where: clip(body.where, 160),
     budget: clip(body.budget, 80),
+    lang: body.lang === 'es' ? 'es' : 'en',
     message: clip(body.message, 5000),
   }
 
@@ -86,6 +102,29 @@ export default async function handler(req, res) {
       return res.status(502).json({ error: 'rejected' })
     }
     console.log('Contact mail accepted', info.accepted, info.response)
+
+    // Confirmation to the visitor. A failure here must not fail the enquiry itself.
+    try {
+      const copy = REPLY[data.lang]
+      const first = esc(data.name.split(' ')[0])
+      await transport.sendMail({
+        from: `Threadline Films <${user}>`,
+        to: data.email,
+        replyTo: process.env.CONTACT_TO || user,
+        subject: copy.subject,
+        text: `${copy.hi} ${data.name.split(' ')[0]},
+
+${copy.body}
+
+${copy.sign}`,
+        html: `<div style="font-family:Georgia,serif;font-size:16px;line-height:1.7;color:#111;max-width:520px">
+          <p>${copy.hi} ${first},</p>
+          ${copy.body.split(/\n{2}/).map((p) => `<p>${p}</p>`).join('')}
+          <p style="margin-top:28px;color:#6b2c39;font-style:italic">${copy.sign}</p></div>`,
+      })
+    } catch (err) {
+      console.error('Auto-reply failed', err)
+    }
     return res.status(200).json({ ok: true })
   } catch (err) {
     console.error('Contact handler failed', err)

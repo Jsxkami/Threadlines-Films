@@ -12,7 +12,7 @@ const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT || '/api/contact'
 const EMPTY = { name: '', email: '', date: '', where: '', budget: '', message: '', hp_field: '' }
 
 export default function Contact({ prefill }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const [form, setForm] = useState(EMPTY)
   const [status, setStatus] = useState('idle')
 
@@ -44,7 +44,7 @@ ${t.contact.budget}: ${form.budget}`,
       const res = await fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, lang }),
       })
       // No backend here (dev server) or email not configured yet → use the email app.
       if (res.status === 404 || res.status === 503) {
