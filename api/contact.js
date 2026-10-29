@@ -5,7 +5,9 @@
 //   CONTACT_TO   optional  – inbox that receives the enquiries (defaults to SMTP_USER)
 //   SMTP_HOST    optional  – defaults to smtp.hostinger.com
 //   SMTP_PORT    optional  – defaults to 465 (SSL)
+//   SITE_URL     optional  – public site URL used by links/images in the visitor's email (defaults to https://www.threadlinefilms.com)
 import nodemailer from 'nodemailer'
+import { renderReplyEmail } from './_replyEmail.js'
 
 const esc = (v) =>
   String(v ?? '')
@@ -16,21 +18,6 @@ const esc = (v) =>
 
 const clip = (v, n) => String(v ?? '').trim().slice(0, n)
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-const REPLY = {
-  en: {
-    subject: 'We received your message — Threadline Films',
-    hi: 'Hi',
-    body: 'Thank you for writing to us. We have your message and will reply personally within 48 hours.\n\nIf it is urgent, just reply to this email.',
-    sign: 'Threadline Films',
-  },
-  es: {
-    subject: 'Recibimos tu mensaje — Threadline Films',
-    hi: 'Hola',
-    body: 'Gracias por escribirnos. Recibimos tu mensaje y te responderemos personalmente en un plazo de 48 horas.\n\nSi es urgente, responde directamente a este correo.',
-    sign: 'Threadline Films',
-  },
-}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -105,22 +92,18 @@ export default async function handler(req, res) {
 
     // Confirmation to the visitor. A failure here must not fail the enquiry itself.
     try {
-      const copy = REPLY[data.lang]
-      const first = esc(data.name.split(' ')[0])
+      const mail = renderReplyEmail({
+        ...data,
+        siteUrl: process.env.SITE_URL,
+        email: process.env.CONTACT_TO || user,
+      })
       await transport.sendMail({
         from: `Threadline Films <${user}>`,
         to: data.email,
         replyTo: process.env.CONTACT_TO || user,
-        subject: copy.subject,
-        text: `${copy.hi} ${data.name.split(' ')[0]},
-
-${copy.body}
-
-${copy.sign}`,
-        html: `<div style="font-family:Georgia,serif;font-size:16px;line-height:1.7;color:#111;max-width:520px">
-          <p>${copy.hi} ${first},</p>
-          ${copy.body.split(/\n{2}/).map((p) => `<p>${p}</p>`).join('')}
-          <p style="margin-top:28px;color:#6b2c39;font-style:italic">${copy.sign}</p></div>`,
+        subject: mail.subject,
+        text: mail.text,
+        html: mail.html,
       })
     } catch (err) {
       console.error('Auto-reply failed', err)
