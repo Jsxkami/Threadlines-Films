@@ -132,10 +132,10 @@ export function renderReplyEmail({ lang = 'en', name = '', date = '', where = ''
             </td>
           </tr>
 
-          <!-- Photograph -->
+          <!-- Header illustration -->
           <tr>
-            <td style="padding:0;" bgcolor="${INK}">
-              <a href="${site}"><img src="${site}/media/videos/hero-thumbs.jpg" width="600" alt="" style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>
+            <td style="padding:0;" bgcolor="#f6ebe0">
+              <a href="${site}"><img src="${site}/media/email/email-header-wedding.jpg" width="600" alt="Threadline Films" style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>
             </td>
           </tr>
 
